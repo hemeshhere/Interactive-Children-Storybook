@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Story; // Import the Story model
+use App\Models\Story;
 use Illuminate\Http\Request;
+use Inertia\Inertia; // Import Inertia
 
 class StoryController extends Controller
 {
     public function index()
     {
-        // Fetch all stories from the database
-        $stories = Story::all(); 
+        // Fetch stories with their pages so the frontend has everything
+        $stories = Story::with('pages')->get(); 
 
-        // Pass the stories to a view (which we will create next)
-        return view('stories.index', ['stories' => $stories]);
+        // Send data to a React component named "Welcome"
+        return Inertia::render('Welcome', [
+            'stories' => $stories
+        ]);
     }
 }
