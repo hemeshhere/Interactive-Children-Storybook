@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('page_number'); // e.g., Page 1, Page 2
             
             // The visual and audio assets
-            $table->string('image_path')->nullable(); // Path to the Lottie file or image
+            $table->string('image_url')->nullable(); // Path to the Lottie file or image
             $table->string('audio_path')->nullable(); // Path to the narrator's voice file
             
             // The actual story text for this specific page

@@ -18,4 +18,26 @@ class StoryController extends Controller
             'stories' => $stories
         ]);
     }
+    // Add this method inside your StoryController class
+    public function library()
+    {
+        // Fetch all stories (in a real app, you might add pagination here)
+        $stories = \App\Models\Story::all();
+
+        return Inertia::render('Library', [
+            'stories' => $stories
+        ]);
+    }
+    // Add this method inside your StoryController
+    public function read($id)
+    {
+        // Fetch the story and its pages from the DB, ordered by page number
+        $story = \App\Models\Story::with(['pages' => function($query) {
+            $query->orderBy('page_number', 'asc');
+        }])->findOrFail($id);
+
+        return \Inertia\Inertia::render('Story/Reader', [
+            'story' => $story
+        ]);
+    }
 }

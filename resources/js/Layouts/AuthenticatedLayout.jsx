@@ -1,176 +1,58 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+export default function AuthenticatedLayout({ user, header, children }) {
+    const [mobileMenu, setMobileMenu] = useState(false);
+    const { url } = usePage();
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+        <div className="min-h-screen bg-sky-100 font-['Fredoka',sans-serif] text-slate-800 relative overflow-hidden selection:bg-pink-400 selection:text-white">
+            
+            {/* Background Clouds */}
+            <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
+                <div className="absolute top-10 left-10 w-40 h-16 bg-white rounded-full blur-[2px]" />
+                <div className="absolute top-32 right-20 w-64 h-24 bg-white rounded-full blur-[2px]" />
+            </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
+            {/* Bouncy Floating Navbar */}
+            <nav className="relative z-50 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div className="bg-white border-[5px] border-white rounded-full px-6 py-3 shadow-[0_8px_0_rgba(0,0,0,0.05)] flex justify-between items-center">
+                    <Link href="/" className="text-3xl font-black text-sky-500 hover:scale-105 transition-transform">
+                        MagicBooks<span className="text-yellow-400">.io</span>
+                    </Link>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
+                    <div className="hidden md:flex items-center gap-8">
+                        <Link href={route('dashboard')} className={`font-black text-xl hover:text-pink-500 transition-colors ${url.startsWith('/dashboard') ? 'text-pink-500' : 'text-sky-400'}`}>
                             Dashboard
-                        </ResponsiveNavLink>
+                        </Link>
+                        <Link href={route('library')} className={`font-black text-xl hover:text-pink-500 transition-colors ${url.startsWith('/library') ? 'text-pink-500' : 'text-sky-400'}`}>
+                            Library
+                        </Link>
+                        
+                        {/* Parent Profile Pill */}
+                        <div className="bg-sky-50 border-[3px] border-sky-200 px-5 py-2 rounded-full font-bold text-sky-700 flex items-center gap-3">
+                            <span className="text-xl">👩‍👧‍👦</span> {user.name}
+                        </div>
+                        <Link href={route('logout')} method="post" as="button" className="font-bold text-slate-400 hover:text-red-500 transition-colors">Log Out</Link>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
+                    <button onClick={() => setMobileMenu(!mobileMenu)} className="md:hidden text-sky-500 p-2"><span className="text-2xl font-black">☰</span></button>
                 </div>
+
+                <AnimatePresence>
+                    {mobileMenu && (
+                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-24 left-4 right-4 bg-white border-[5px] border-sky-200 rounded-3xl p-4 shadow-xl z-50 flex flex-col gap-2 md:hidden">
+                            <Link href={route('dashboard')} className="font-black text-sky-600 text-xl text-center bg-sky-50 py-3 rounded-2xl">Dashboard</Link>
+                            <Link href={route('library')} className="font-black text-sky-600 text-xl text-center bg-sky-50 py-3 rounded-2xl">Library</Link>
+                            <Link href={route('logout')} method="post" as="button" className="font-black text-pink-500 text-xl text-center bg-pink-50 py-3 rounded-2xl">Log Out</Link>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
-            )}
-
-            <main>{children}</main>
+            {header && <header className="relative z-10 max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">{header}</header>}
+            <main className="relative z-10 pb-20">{children}</main>
         </div>
     );
 }
