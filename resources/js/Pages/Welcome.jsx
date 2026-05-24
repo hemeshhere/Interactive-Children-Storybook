@@ -132,7 +132,7 @@ export default function Welcome({ auth }) {
                         {/* Desktop Links */}
                         <div className="hidden md:flex items-center gap-8">
                             <a href="#stories" className="font-bold text-slate-500 hover:text-pink-500 hover:-translate-y-1 transition-all text-xl">Stories</a>
-                            <a href="#features" className="font-bold text-slate-500 hover:text-pink-500 hover:-translate-y-1 transition-all text-xl">Games</a>
+                            <a href="https://kids.nationalgeographic.com/games/puzzles/" className="font-bold text-slate-500 hover:text-pink-500 hover:-translate-y-1 transition-all text-xl">Games</a>
                             
                             {auth?.user ? (
                                 <Link href={route('dashboard')} className="bg-sky-400 text-white px-8 py-3 rounded-full font-black shadow-[0_6px_0_#0284c7] hover:translate-y-1 hover:shadow-[0_2px_0_#0284c7] active:translate-y-2 active:shadow-none transition-all text-xl border-[3px] border-sky-300">
@@ -168,7 +168,7 @@ export default function Welcome({ auth }) {
                             className="absolute top-24 left-0 w-full bg-white border-[6px] border-white rounded-[30px] p-4 shadow-[0_12px_0_rgba(0,0,0,0.1)] flex flex-col gap-3 md:hidden z-40"
                         >
                             <a href="#stories" onClick={() => setMobileMenuOpen(false)} className="font-black text-slate-600 text-xl text-center bg-slate-50 py-4 rounded-2xl active:bg-slate-100 border-2 border-transparent">Stories</a>
-                            <a href="#features" onClick={() => setMobileMenuOpen(false)} className="font-black text-slate-600 text-xl text-center bg-slate-50 py-4 rounded-2xl active:bg-slate-100 border-2 border-transparent">Games</a>
+                            <a href="https://kids.nationalgeographic.com/games/puzzles/" onClick={() => setMobileMenuOpen(false)} className="font-black text-slate-600 text-xl text-center bg-slate-50 py-4 rounded-2xl active:bg-slate-100 border-2 border-transparent">Games</a>
                             {auth?.user ? (
                                 <Link href={route('dashboard')} className="bg-sky-400 text-white text-center py-4 rounded-2xl font-black shadow-[0_6px_0_#0284c7] text-xl mt-2">Go to Dashboard</Link>
                             ) : (
