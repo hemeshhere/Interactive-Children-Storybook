@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Confetti from 'react-confetti';
-import { FaArrowLeft, FaArrowRight, FaPlay, FaPause, FaHome, FaRedo, FaCheckCircle, FaBookmark } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaPlay, FaPause, FaHome, FaRedo, FaBookmark, FaTrophy } from 'react-icons/fa';
 
 export default function Reader({ story }) {
     const [windowDimensions, setWindowDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
@@ -64,7 +64,7 @@ export default function Reader({ story }) {
         setShowConfetti(false);
     }, [currentPage]);
 
-    // --- ACCESSIBLE KARAOKE ENGINE (SLOWED DOWN) ---
+    // --- ACCESSIBLE KARAOKE ENGINE ---
     useEffect(() => {
         let interval;
         if (isPlaying) {
@@ -98,6 +98,11 @@ export default function Reader({ story }) {
 
     const nextPage = () => { if (currentPage < story.pages.length - 1) setCurrentPage(prev => prev + 1); };
     const prevPage = () => { if (currentPage > 0) setCurrentPage(prev => prev - 1); };
+
+    // Trigger the backend to save the finished book
+    const finishBook = () => {
+        router.post(route('reader.finish', story.id));
+    };
 
     const activeWordTransition = { type: "spring", stiffness: 300, damping: 15 };
 
@@ -174,7 +179,6 @@ export default function Reader({ story }) {
                             {/* --- LEFT PAGE --- */}
                             <div className="w-full md:w-1/2 h-[50%] md:h-full relative flex flex-col justify-center p-6 md:p-14 border-b-2 md:border-b-0 md:border-r border-slate-200/50 bg-[#fffefc]">
                                 <div className="flex-1 overflow-y-auto pt-4 md:pt-10 scrollbar-hide">
-                                    {/* 🟢 INCREASED LINE HEIGHT FOR READABILITY */}
                                     <h2 className="text-3xl md:text-5xl font-black leading-[1.8] text-slate-700 tracking-wide select-none">
                                         {leftWords.map((word, index) => {
                                             const isActive = index === highlightIndex;
@@ -187,7 +191,6 @@ export default function Reader({ story }) {
                                                         scale: [1, 1.1, 1.05], y: [0, -5, -2], rotate: [0, -2, 2, 0]
                                                     } : isPast ? { scale: 1, y: 0, rotate: 0 } : { scale: 1, y: 0, rotate: 0 }}
                                                     transition={activeWordTransition}
-                                                    // 🟢 HIGH CONTRAST COLORS
                                                     className={`inline-block mr-2 md:mr-3 mb-3 px-2 py-1 rounded-2xl transition-all duration-200 origin-center ${
                                                         isActive 
                                                         ? 'bg-yellow-300 text-slate-900 shadow-[0_4px_0_#ca8a04] z-10 relative font-black' 
@@ -263,12 +266,16 @@ export default function Reader({ story }) {
                     </motion.div>
                 </AnimatePresence>
 
+                {/* Desktop Next/Claim Reward Button */}
                 <div className="hidden md:flex absolute right-0 xl:right-[-20px] z-30">
                     {currentPage === story.pages.length - 1 ? (
-                        <motion.div animate={isFinishedReading ? { scale: [1, 1.1, 1] } : {}} transition={{ repeat: Infinity, duration: 1 }}>
-                            <Link href={route('library')} className="bg-emerald-400 border-[6px] border-emerald-500 px-8 py-5 rounded-full flex items-center gap-3 shadow-[0_8px_0_#059669] hover:translate-y-1 hover:shadow-none transition-all text-white font-black text-2xl">
-                                <FaCheckCircle /> Finish
-                            </Link>
+                        <motion.div animate={isFinishedReading ? { scale: [1, 1.1, 1] } : {}} transition={{ repeat: Infinity, duration: 1.5 }}>
+                            <button 
+                                onClick={finishBook}
+                                className={`bg-gradient-to-r from-yellow-400 to-amber-500 border-[6px] border-amber-600 px-8 py-5 rounded-full flex items-center gap-3 shadow-[0_8px_0_#d97706] hover:translate-y-1 hover:shadow-none transition-all text-amber-950 font-black text-2xl ${isFinishedReading ? 'shadow-[0_0_30px_rgba(251,191,36,0.8)]' : 'opacity-50 pointer-events-none'}`}
+                            >
+                                <FaTrophy className="text-yellow-100 w-8 h-8 drop-shadow-md" /> Claim Reward!
+                            </button>
                         </motion.div>
                     ) : (
                         <motion.div animate={isFinishedReading ? { scale: [1, 1.2, 1], x: [0, 5, 0] } : {}} transition={{ repeat: Infinity, duration: 1 }}>
@@ -280,15 +287,21 @@ export default function Reader({ story }) {
                 </div>
             </div>
 
+            {/* Mobile Navigation HUD */}
             <div className="md:hidden absolute bottom-4 w-full px-4 flex justify-between items-center z-40 pointer-events-none">
                 <button onClick={prevPage} disabled={currentPage === 0} className={`pointer-events-auto bg-white border-[4px] border-slate-200 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_6px_0_#cbd5e1] text-sky-500 transition-opacity ${currentPage === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                     <FaArrowLeft className="w-5 h-5" />
                 </button>
                 
                 {currentPage === story.pages.length - 1 ? (
-                    <Link href={route('library')} className="pointer-events-auto bg-emerald-400 border-[4px] border-emerald-500 px-6 py-3 rounded-full flex items-center gap-2 shadow-[0_6px_0_#059669] text-white font-black text-lg">
-                        <FaCheckCircle /> Finish
-                    </Link>
+                    <motion.div animate={isFinishedReading ? { scale: [1, 1.05, 1] } : {}} transition={{ repeat: Infinity, duration: 1.5 }} className="pointer-events-auto">
+                        <button 
+                            onClick={finishBook}
+                            className={`bg-gradient-to-r from-yellow-400 to-amber-500 border-[4px] border-amber-600 px-6 py-3 rounded-full flex items-center gap-2 shadow-[0_6px_0_#d97706] text-amber-950 font-black text-lg ${isFinishedReading ? '' : 'opacity-50 pointer-events-none'}`}
+                        >
+                            <FaTrophy className="text-yellow-100" /> Claim Reward
+                        </button>
+                    </motion.div>
                 ) : (
                     <motion.div animate={isFinishedReading ? { scale: [1, 1.1, 1], x: [0, 3, 0] } : {}} transition={{ repeat: Infinity, duration: 1 }} className="pointer-events-auto">
                         <button onClick={nextPage} className={`bg-yellow-400 border-[4px] border-yellow-500 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_6px_0_#ca8a04] text-yellow-900 ${isFinishedReading ? 'shadow-[0_0_15px_rgba(250,204,21,0.8)]' : ''}`}>

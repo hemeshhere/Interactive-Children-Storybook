@@ -2,28 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    // Add this line to allow saving these fields
-    protected $fillable = ['user_id', 'name', 'avatar_url', 'age', 'points', 'preferences'];
+    use HasFactory;
 
-    // Ensure preferences is cast to an array when retrieved from the JSON column
-    protected function casts(): array
-    {
-        return [
-            'preferences' => 'array',
-        ];
-    }
-    
+    protected $fillable = [
+        'user_id', 'name', 'age', 'avatar', 'color', 'shadow', 'points', 'books_read', 'reading_time_minutes'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function progress()
+    // A profile can read many stories
+    public function stories()
     {
-        return $this->hasMany(Progress::class);
+        return $this->belongsToMany(Story::class)->withTimestamps();
     }
 }

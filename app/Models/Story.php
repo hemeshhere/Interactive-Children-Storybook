@@ -20,4 +20,9 @@ class Story extends Model
     {
         return $this->hasMany(Page::class)->orderBy('page_number', 'asc');
     }
+    // A story can be read by many profiles
+    public function profiles()
+    {
+        return $this->belongsToMany(Profile::class)->withTimestamps();
+    }
 }

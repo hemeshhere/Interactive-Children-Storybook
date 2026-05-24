@@ -6,21 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            // Links this profile to the Parent (User)
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); 
-            
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Links to Parent
             $table->string('name');
-            $table->string('avatar_url')->nullable();
             $table->integer('age');
-            $table->integer('points')->default(0); // For gamification later!
-            
-            // JSON column for individual child settings
-            $table->json('preferences')->nullable(); 
-            
+            $table->string('avatar')->default('FaUserAstronaut');
+            $table->string('color')->default('bg-yellow-300 border-yellow-400 text-yellow-900');
+            $table->string('shadow')->default('shadow-[0_8px_0_#facc15]');
+            $table->integer('points')->default(0);
+            $table->integer('books_read')->default(0);
+            $table->integer('reading_time_minutes')->default(0);
             $table->timestamps();
         });
     }
