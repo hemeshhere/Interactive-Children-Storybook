@@ -1,11 +1,13 @@
 [environment]
 # 1. Force Railway to load both PHP and Node.js environments
 NIXPACKS_PROVIDERS = "php,node"
+# Bypass strict NPM version checking to fix the Vite conflict
+NPM_CONFIG_LEGACY_PEER_DEPS = "true"
 
 [build]
 # 2. Explicitly define the build steps in the correct order
 builder = "nixpacks"
-buildCommand = "composer install --optimize-autoloader --no-interaction && npm install && npm run build"
+buildCommand = "composer install --optimize-autoloader --no-interaction && npm run build"
 
 [deploy]
 # 3. Run database migrations safely, then start the Laravel web server
