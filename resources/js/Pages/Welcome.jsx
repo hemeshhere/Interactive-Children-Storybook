@@ -433,7 +433,7 @@ export default function Welcome({ auth }) {
 
                 <div className="max-w-7xl mx-auto mt-16 md:mt-20 pt-10 border-t-8 border-sky-400 border-dashed flex flex-col md:flex-row items-center justify-between gap-8">
                     <p className="text-sky-100 text-xl font-bold text-center md:text-left">
-                        © {new Date().getFullYear()} MagicBooks.io. Made with 💖 and ✨.
+                        © {new Date().getFullYear()} MagicBooks.io.
                     </p>
                     <motion.button
                         whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={scrollToTop}
