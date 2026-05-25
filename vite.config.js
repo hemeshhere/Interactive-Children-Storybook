@@ -7,10 +7,19 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css', 
-                'resources/js/app.jsx' // Make sure this ends in .jsx!
+                'resources/js/app.jsx'
             ],
             refresh: true,
         }),
         react(),
     ],
+    build: {
+        // Force Vite to use these files, NEVER index.html
+        rollupOptions: {
+            input: [
+                'resources/css/app.css', 
+                'resources/js/app.jsx'
+            ],
+        }
+    }
 });
